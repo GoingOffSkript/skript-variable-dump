@@ -1,4 +1,4 @@
-package io.github.goingoffskript.skriptvariabledump;
+package com.github.goingoffskript.skriptvariabledump;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.variables.Variables;

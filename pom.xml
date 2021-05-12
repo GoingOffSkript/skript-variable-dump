@@ -6,11 +6,12 @@
 
     <groupId>io.github.goingoffskript</groupId>
     <artifactId>skript-variable-dump</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <repositories>
@@ -26,6 +27,7 @@
 
     <dependencies>
         <!-- Paper API (via papermc) -->
+        <!-- Few versions behind to ensure compatibility -->
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper-api</artifactId>
@@ -33,6 +35,7 @@
             <scope>provided</scope>
         </dependency>
         <!-- Skript (via jitpack) -->
+        <!-- Few versions behind to ensure compatibility -->
         <dependency>
             <groupId>com.github.skriptlang</groupId>
             <artifactId>skript</artifactId>
@@ -50,6 +53,7 @@
             <groupId>pl.tlinkowski.annotation</groupId>
             <artifactId>pl.tlinkowski.annotation.basic</artifactId>
             <version>0.2.0</version>
+            <!-- Note: scope must be visible to dependent projects otherwise nullness annotations will not work as intended -->
         </dependency>
     </dependencies>
 
@@ -79,4 +83,56 @@
             </resource>
         </resources>
     </build>
+
+    <profiles>
+        <!-- JitPack (activated with `JITPACK=true` environment variable) -->
+        <profile>
+            <id>jitpack</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>env.JITPACK</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- Generate javadocs -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <configuration>
+                            <doclint>none</doclint>
+                            <links>
+                                <link>https://javadoc.io/doc/pl.tlinkowski.annotation/pl.tlinkowski.annotation.basic/0.2.0/</link>
+                            </links>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Attach sources -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>

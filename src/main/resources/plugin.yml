@@ -1,4 +1,4 @@
-main: io.github.goingoffskript.skriptvariabledump.VariableDumpPlugin
+main: com.github.goingoffskript.skriptvariabledump.VariableDumpPlugin
 name: ${project.name}
 version: ${project.version}
 api-version: 1.13
