@@ -1,0 +1,10 @@
+main: io.github.goingoffskript.skriptvariabledump.VariableDumpPlugin
+name: ${project.name}
+version: ${project.version}
+api-version: 1.13
+depend: [Skript]
+
+commands:
+  skript-variable-dump:
+    aliases: [skriptvariabledump, skvardump, dump-skript-variables, dumpskriptvariables, dumpskiptvars, dumpskvars]
+    permission: skriptvariabledump.dump
