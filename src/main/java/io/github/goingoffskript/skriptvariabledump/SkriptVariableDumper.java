@@ -21,72 +21,53 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 
-public class SkriptVariableDumper
+// No reason to expose this class, make it package-private
+final class SkriptVariableDumper
 {
     private SkriptVariableDumper() {}
     
     private static final AtomicBoolean IS_DUMPING_VARIABLES = new AtomicBoolean(false);
     
-    private static final @NullOr Method GET_VARIABLES;
+    private static final @NullOr Method GET_VARIABLES = method("getVariables");
     
-    static
+    private static final @NullOr Method GET_READ_LOCK = method("getReadLock");
+    
+    private static @NullOr Method method(String declaredMethodName)
     {
-        @NullOr Method getVariables = null;
-        
         try
         {
-            getVariables = Variables.class.getDeclaredMethod("getVariables");
-            getVariables.setAccessible(true);
+            Method method = Variables.class.getDeclaredMethod(declaredMethodName);
+            method.setAccessible(true);
+            return method;
         }
-        catch (NoSuchMethodException e) { e.printStackTrace(); }
-        
-        GET_VARIABLES = getVariables;
-    }
-    
-    private static final @NullOr Method GET_READ_LOCK;
-    
-    static
-    {
-        @NullOr Method getReadLock = null;
-        
-        try
+        catch (NoSuchMethodException e)
         {
-            getReadLock = Variables.class.getDeclaredMethod("getReadLock");
-            getReadLock.setAccessible(true);
+            e.printStackTrace();
+            return null;
         }
-        catch (NoSuchMethodException e) { e.printStackTrace(); }
-        
-        GET_READ_LOCK = getReadLock;
     }
     
     static boolean isInvalid() { return GET_VARIABLES == null || GET_READ_LOCK == null; }
     
     @SuppressWarnings("unchecked")
-    private static Map<String, Object> variables()
+    private static <T> T invoke(@NullOr Method method)
     {
-        if (GET_VARIABLES == null) { throw new IllegalStateException(); }
-        try { return (Map<String, Object>) GET_VARIABLES.invoke(null); }
+        if (method == null) { throw new IllegalArgumentException(); }
+        try { return (T) method.invoke(null); }
         catch (IllegalAccessException | InvocationTargetException e) { throw new RuntimeException(e); }
     }
     
-    private static Lock readLock()
-    {
-        if (GET_READ_LOCK == null) { throw new IllegalStateException(); }
-        try { return (Lock) GET_READ_LOCK.invoke(null); }
-        catch (IllegalAccessException | InvocationTargetException e) { throw new RuntimeException(e); }
-    }
+    private static Map<String, Object> variables() { return invoke(GET_VARIABLES); }
     
-    @SuppressWarnings("ConstantConditions")
-    private static String key(Map.Entry<String, Object> entry)
+    private static Lock readLock() { return invoke(GET_READ_LOCK); }
+    
+    private static String key(@NullOr String key)
     {
-        @NullOr String key = entry.getKey();
         return (key == null || key.isEmpty()) ? "<none>" : key;
     }
     
-    @SuppressWarnings("ConstantConditions")
-    private static @NullOr Object value(Map.Entry<String, Object> entry)
+    private static @NullOr Object value(@NullOr Object value)
     {
-        @NullOr Object value = entry.getValue();
         return (value == null) ? null : SkriptToYaml.adapt(value);
     }
     
@@ -95,8 +76,8 @@ public class SkriptVariableDumper
     {
         for (Map.Entry<String, Object> entry : vars.entrySet())
         {
-            String key = key(entry);
-            @NullOr Object value = value(entry);
+            String key = key(entry.getKey());
+            @NullOr Object value = value(entry.getValue());
             
             if (value instanceof Map) { dump(section.createSection(key), (Map<String, Object>) value); }
             else { section.set(key, value); }
@@ -116,9 +97,9 @@ public class SkriptVariableDumper
     {
         return () ->
         {
-            boolean available = IS_DUMPING_VARIABLES.compareAndSet(false, true);
+            boolean isAvailable = IS_DUMPING_VARIABLES.compareAndSet(false, true);
             
-            if (!available)
+            if (!isAvailable)
             {
                 sender.sendMessage("Already dumping variables, be patient...");
                 return;
