@@ -1,4 +1,4 @@
-package io.github.goingoffskript.skriptvariabledump;
+package com.github.goingoffskript.skriptvariabledump;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
