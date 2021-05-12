@@ -7,8 +7,8 @@ Dump [Skript](https://github.com/SkriptLang/Skript/) variables to YAML.
 
 ## Instructions
 
-Simply install this plugin on a server already running Skript and execute
-the following command: `/skript-variable-dump`
+Simply install this plugin on a server already running Skript and run:
+**/skript-variable-dump**
 
 All loaded variables will be dumped into a YAML file generated at:
 `/plugins/Skript/dumps/`
