@@ -37,7 +37,7 @@ public class SkriptToYaml
     }
     
     @SuppressWarnings("unchecked")
-    private static <T> void adapts(Class<T> clazz, BiConsumer<T, Map<String, Object>> adapter)
+    public static <T> void adapts(Class<T> clazz, BiConsumer<T, Map<String, Object>> adapter)
     {
         ADAPTERS.put(clazz, (object, map) -> {
             map.put("==", clazz.getSimpleName());
