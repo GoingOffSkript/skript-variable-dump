@@ -4,7 +4,10 @@ version: ${project.version}
 api-version: 1.13
 depend: [Skript]
 
+website: https://github.com/GoingOffSkript/skript-variable-dump
+
 commands:
   skript-variable-dump:
     aliases: [skriptvariabledump, skvardump, dump-skript-variables, dumpskriptvariables, dumpskiptvars, dumpskvars]
+    description: Dump Skript variables to YAML.
     permission: skriptvariabledump.dump
