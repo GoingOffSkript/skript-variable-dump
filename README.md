@@ -44,7 +44,7 @@ however they see fit.
 
 - Variables: `/plugins/Skript/variables.csv`
 
-```csv
+```vb
 # === Skript's variable storage ===
 # Please do not modify this file manually!
 #
