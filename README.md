@@ -80,7 +80,7 @@ numbers:
   '8': 8.2
   '9': 9.1
 wait:
-  ==: Timespan
+  ==: ch.njol.skript.util.Timespan
   milliseconds: 3000
 ```
 
