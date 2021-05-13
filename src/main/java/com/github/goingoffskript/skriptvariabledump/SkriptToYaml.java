@@ -59,7 +59,7 @@ public class SkriptToYaml
     public static <T> void adapts(Class<T> clazz, Adapter<T> adapter)
     {
         ADAPTERS.put(clazz, (object, map) -> {
-            map.put("==", clazz.getSimpleName());
+            map.put("==", clazz.getName());
             adapter.accept((T) object, map);
         });
     }
