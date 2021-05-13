@@ -17,6 +17,27 @@ All loaded variables will be dumped into a YAML file generated at:
 
 That's all.
 
+## Rationale
+
+This tool exists so script authors who intend to rewrite their scripts
+as plugins have an easy way to export their variable data and import it
+however they see fit.
+
+**Goals**
+
+- Export Skript variables to platform-agnostic formats.
+  - That way, data stored as variables is portable and accessible
+    outside of Skript's opaque, effectively-proprietary storage format.
+  - Use case: rewriting a script as a plugin and importing the
+    script's legacy data.
+
+**Non-goals**
+
+- Importing previously dumped variables.
+  - This tool is meant to be a one-way conversion to get Skript data
+    elsewhere, and since the data itself *originates* in Skript, importing
+    previous dumps is considered outside this project's scope.
+
 ## Example
 
 📜 ➡️ 📑
