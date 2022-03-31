@@ -4,6 +4,7 @@ import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.util.Color;
 import ch.njol.skript.util.Date;
 import ch.njol.skript.util.Timespan;
+import org.bukkit.OfflinePlayer;
 import pl.tlinkowski.annotation.basic.NullOr;
 
 import java.util.HashMap;
@@ -37,6 +38,10 @@ public class SkriptToYaml
         adapts(Timespan.class, (timespan, map) -> {
             map.put("milliseconds", timespan.getMilliSeconds());
         });
+        
+        adapts(OfflinePlayer.class, (player, map) -> {
+            map.put("uuid", player.getUniqueId().toString());
+        });
     }
     
     /**
@@ -59,7 +64,7 @@ public class SkriptToYaml
     public static <T> void adapts(Class<T> clazz, Adapter<T> adapter)
     {
         ADAPTERS.put(clazz, (object, map) -> {
-            map.put("==", clazz.getName());
+            map.put("<class>", clazz.getName());
             adapter.accept((T) object, map);
         });
     }
@@ -76,7 +81,12 @@ public class SkriptToYaml
     @SuppressWarnings("unchecked")
     public static Object adapt(Object object)
     {
-        @NullOr Adapter<?> adapter = ADAPTERS.get(object.getClass());
+        Class<?> clazz = object.getClass();
+        
+        // Special case: players (avoids duplicate objects with weird YAML-references)
+        if (object instanceof OfflinePlayer) { clazz = OfflinePlayer.class; }
+        
+        @NullOr Adapter<?> adapter = ADAPTERS.get(clazz);
         if (adapter == null) { return object; }
         
         Map<String, Object> map = new LinkedHashMap<>();

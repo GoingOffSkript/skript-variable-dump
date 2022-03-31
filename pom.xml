@@ -6,7 +6,7 @@
 
     <groupId>io.github.goingoffskript</groupId>
     <artifactId>skript-variable-dump</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
